@@ -39,4 +39,3 @@ After you input all the information which were asked correctly, the message will
 
 ## Requirements
 bazel
->>>>>>> a0a989e... feat: Add readme for instructions

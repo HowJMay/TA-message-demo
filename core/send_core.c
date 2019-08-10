@@ -98,6 +98,7 @@ retcode_t mam_example_announce_endpoint(mam_api_t* const api,
 
 retcode_t mam_write_header_on_channel_tool(mam_api_t* const api,
                                            tryte_t const* const channel_id,
+                                           tryte_t const* const endpoint_id,
                                            bundle_transactions_t* const bundle,
                                            trit_t* const msg_id) {
   retcode_t ret = RC_OK;
@@ -110,8 +111,9 @@ retcode_t mam_write_header_on_channel_tool(mam_api_t* const api,
     }
   }
 
-  if ((ret = mam_api_bundle_write_header_on_channel(api, channel_id, psks, NULL,
-                                                    bundle, msg_id)) != RC_OK) {
+  if ((ret = mam_api_bundle_write_header_on_endpoint(
+           api, channel_id, endpoint_id, psks, NULL, bundle, msg_id)) !=
+      RC_OK) {
     return ret;
   }
   mam_psk_t_set_free(&psks);

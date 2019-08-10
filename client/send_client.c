@@ -3,7 +3,8 @@
 #include "send_client.h"
 
 retcode_t init_mam_send_objs(mam_api_t *api, bundle_transactions_t **bundle,
-                             tryte_t *channel_id) {
+                             char *ntru_pb_key, tryte_t *channel_id,
+                             tryte_t *endpoint_id) {
   retcode_t ret = RC_OK;
 
   // Loading or creating MAM API
@@ -12,25 +13,45 @@ retcode_t init_mam_send_objs(mam_api_t *api, bundle_transactions_t **bundle,
     return ret;
   }
 
+  // Adding the receiver APIs public key to the sender API public key list
+  flex_trit_t flex_trit_pb_key[NTRU_PB_KEY_LEN_TRIT];
+  trit_t trit_pb_key[NTRU_PB_KEY_LEN_TRIT];
+  mam_ntru_pk_t ntru_pk;
+  memcpy(ntru_pk.key, trit_pb_key, NTRU_PB_KEY_LEN_TRIT);
+  flex_trits_from_trytes(flex_trit_pb_key, NTRU_PB_KEY_LEN_TRIT * 3,
+                         (const tryte_t *)ntru_pb_key, NTRU_PB_KEY_LEN_TRYTE,
+                         NTRU_PB_KEY_LEN_TRYTE);
+  flex_trits_to_trits(trit_pb_key, NTRU_PB_KEY_LEN_TRIT, flex_trit_pb_key,
+                      NTRU_PB_KEY_LEN_TRIT, NTRU_PB_KEY_LEN_TRIT);
+  ERR_BIND_RETURN(mam_api_add_ntru_pk(api, &ntru_pk), ret);
+
   // Creating channel
   if ((ret = mam_channel_create_tool(api, channel_id)) != RC_OK) {
     fprintf(stderr, "mam_channel_create_tool failed with err %d\n", ret);
     return ret;
   }
 
+  ERR_BIND_RETURN(
+      mam_api_endpoint_create(api, MSS_DEPTH, channel_id, endpoint_id), ret);
+  fprintf(stderr, "Endpoint: ");
+  for (size_t i = 0; i < FLEX_TRIT_SIZE_243; i++) {
+    fprintf(stderr, "%c", endpoint_id[i]);
+  }
+  fprintf(stderr, "\n");
   bundle_transactions_new(bundle);
 
   return RC_OK;
 }
 
 retcode_t send_mam_msg(mam_api_t *api, bundle_transactions_t *bundle,
-                       tryte_t *channel_id, char *payload) {
+                       tryte_t *channel_id, tryte_t *endpoint_id,
+                       char *payload) {
   retcode_t ret = RC_OK;
   trit_t msg_id[MAM_MSG_ID_SIZE];
 
   // Writing header to bundle
-  if ((ret = mam_write_header_on_channel_tool(api, channel_id, bundle,
-                                              msg_id)) != RC_OK) {
+  if ((ret = mam_write_header_on_channel_tool(api, channel_id, endpoint_id,
+                                              bundle, msg_id)) != RC_OK) {
     fprintf(stderr, "mam_write_header_on_channel_tool failed with err %d\n",
             ret);
     return ret;
