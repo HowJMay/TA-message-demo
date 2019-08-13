@@ -16,3 +16,10 @@ cc_binary(
     ],
 )
 
+cc_binary(
+    name = "transfer",
+    srcs = ["transfer.c"],
+    deps = [
+        "@entangled//cclient/api",
+    ],
+)
