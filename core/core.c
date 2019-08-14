@@ -125,9 +125,8 @@ static void get_first_bundle_from_transactions(
 }
 
 // TODO Merge into cclient
-static void recv_example_init_client_service(iota_client_service_t *const serv,
-                                             char const *const host,
-                                             uint16_t const port) {
+void init_client_service(iota_client_service_t *const serv,
+                         char const *const host, uint16_t const port) {
   serv->http.path = "/";
   serv->http.content_type = "application/json";
   serv->http.accept = "application/json";
@@ -170,7 +169,7 @@ retcode_t receive_bundle(char const *const host, uint16_t const port,
                          bundle_transactions_t *const bundle) {
   retcode_t ret = RC_OK;
   iota_client_service_t serv;
-  recv_example_init_client_service(&serv, host, port);
+  init_client_service(&serv, host, port);
   iota_client_extended_init();
 
   transaction_array_t *out_tx_objs = NULL;

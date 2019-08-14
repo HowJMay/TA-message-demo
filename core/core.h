@@ -18,11 +18,8 @@
 #include "mam/api/api.h"
 
 #define SEED                                                                   \
-  "AMRWQP9BUMJALJHBXUCHOD9HFFD9LGTGEAWMJWWXSDVOF9PI9YGJAPBQLQUOMNYEQCZPGCTHGV" \
+  "AARWQP9BUMJALJHBXUCHOD9HFFD9LGTGEAWMJWWXSDVOF9PI9YGJAPBQLQUOMNYEQCZPGCTHGV" \
   "NNAPGHA"
-#define HOST "node.deviceproof.org"
-#define PORT 14265
-
 #define MSS_DEPTH 1
 
 #ifdef __cplusplus
@@ -32,6 +29,9 @@ extern "C" {
 find_transactions_req_t recv_example_req;
 
 extern mam_psk_t const psk;
+
+void init_client_service(iota_client_service_t *const serv,
+                         char const *const host, uint16_t const port);
 
 retcode_t mam_channel_create_tool(mam_api_t *const api,
                                   tryte_t *const channel_id);
