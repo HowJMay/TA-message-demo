@@ -20,6 +20,8 @@
 #define SEED                                                                   \
   "AARWQP9BUMJALJHBXUCHOD9HFFD9LGTGEAWMJWWXSDVOF9PI9YGJAPBQLQUOMNYEQCZPGCTHGV" \
   "NNAPGHA"
+#define NTRU_NONCE "BCDEFGHIJK"
+#define NTRU_NONCE_LEN 10
 #define MSS_DEPTH 1
 
 #ifdef __cplusplus

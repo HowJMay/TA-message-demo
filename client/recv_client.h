@@ -2,7 +2,6 @@
 #define RECV_CLIENT_H_
 
 #include "core/core.h"
-#define NONCE_LEN 10
 
 retcode_t init_mam_recv_objs();
 retcode_t gen_keypair(char *nonce_str);

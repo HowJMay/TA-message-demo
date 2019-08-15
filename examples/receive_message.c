@@ -3,7 +3,6 @@
 #include "client/recv_client.h"
 #define HOST "node.deviceproof.org"
 #define PORT 14265
-#define NONCE "BCDEFGHIJK"
 
 #define BUNDLE_HASH                                                            \
   "IFQBPDGIKFTRNKCG9SDEOVNZFDGGKVYQHILFPOFFJHNWKRRH9ESTIKYZNXMJFINPHVBPBSAEC9" \
@@ -23,7 +22,7 @@ int main(int ac, char **av) {
   tryte_t epid[NUM_TRYTES_ADDRESS];
 
   init_mam_recv_objs();
-  gen_keypair(NONCE);
+  gen_keypair(NTRU_NONCE);
 
   printf("Input bundle hash:");
   fgets((char *)bundle_hash, NUM_TRYTES_ADDRESS + 2, stdin);

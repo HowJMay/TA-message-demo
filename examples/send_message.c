@@ -2,6 +2,8 @@
 
 #include "client/send_client.h"
 #include "core/send_core.h"
+#define HOST "node.deviceproof.org"
+#define PORT 14265
 
 int main(int ac, char **av) {
   mam_api_t api;
@@ -11,18 +13,25 @@ int main(int ac, char **av) {
   retcode_t ret = RC_OK;
 
   if (ac != 3) {
-    fprintf(stderr, "Please provide `payload`, `NTRU public key`.\n");
+    fprintf(stderr, "Please provide `payload`, `NTRU key file path`.\n");
     return EXIT_FAILURE;
   }
   char *payload = av[1];
-  char *ntru_pb_key = av[2];
-
-  ret = init_mam_send_objs(&api, &bundle, ntru_pb_key, channel_id, endpoint_id);
+  char *file_path = av[2];
+  FILE *fptr;
+  trit_t key[MAM_NTRU_PK_SIZE];
+  if ((fptr = fopen(file_path, "rb")) == NULL) {
+    printf("Error! opening file");
+    return EXIT_FAILURE;
+  }
+  fread(key, sizeof(key), 1, fptr);
+  ret = init_mam_send_objs(&api, &bundle, key, channel_id, endpoint_id);
   if (ret) {
     return EXIT_FAILURE;
   }
 
-  ret = send_mam_msg(&api, bundle, channel_id, endpoint_id, payload);
+  ret =
+      send_mam_msg(HOST, PORT, &api, bundle, channel_id, endpoint_id, payload);
   if (ret) {
     return EXIT_FAILURE;
   }

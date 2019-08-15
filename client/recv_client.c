@@ -72,8 +72,8 @@ retcode_t gen_keypair(char *nonce_str) {
 
   // Generating a keypair for the receiver api
   mam_ntru_sk_t *ntru = (mam_ntru_sk_t *)malloc(sizeof(mam_ntru_sk_t));
-  MAM_TRITS_DEF(nonce, 3 * NONCE_LEN);
-  nonce = MAM_TRITS_INIT(nonce, 3 * NONCE_LEN);
+  MAM_TRITS_DEF(nonce, 3 * NTRU_NONCE_LEN);
+  nonce = MAM_TRITS_INIT(nonce, 3 * NTRU_NONCE_LEN);
   trits_from_str(nonce, nonce_str);
   ntru_sk_reset(ntru);
   ntru_sk_gen(ntru, &api->prng, nonce);
@@ -81,6 +81,7 @@ retcode_t gen_keypair(char *nonce_str) {
   // Setting the generated keypair to the receiver API
   ERR_BIND_RETURN(mam_api_add_ntru_sk(api, ntru), ret);
 
+  /*
   flex_trit_t flex_pk[MAM_NTRU_PK_SIZE];
   tryte_t tryte_pk[MAM_NTRU_PK_SIZE / 3];
   flex_trits_from_trits(flex_pk, MAM_NTRU_PK_SIZE, ntru->public_key.key,
@@ -92,6 +93,7 @@ retcode_t gen_keypair(char *nonce_str) {
     fprintf(stderr, "%c", tryte_pk[i]);
   }
   fprintf(stderr, "\n");
+  */
 
   return ret;
 }
@@ -191,7 +193,7 @@ retcode_t extra_recv_msg_chid(char *host, int port, tryte_t *chid,
 done:
   find_transactions_req_free(&txn_req);
   find_transactions_res_free(&txn_res);
-  transaction_array_free(&obj_res);
+  transaction_array_free(obj_res);
   iota_client_core_destroy(&serv);
   return ret;
 }

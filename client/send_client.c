@@ -3,7 +3,7 @@
 #include "send_client.h"
 
 retcode_t init_mam_send_objs(mam_api_t *api, bundle_transactions_t **bundle,
-                             char *ntru_pb_key, tryte_t *channel_id,
+                             trit_t *ntru_pb_key, tryte_t *channel_id,
                              tryte_t *endpoint_id) {
   retcode_t ret = RC_OK;
 
@@ -14,15 +14,9 @@ retcode_t init_mam_send_objs(mam_api_t *api, bundle_transactions_t **bundle,
   }
 
   // Adding the receiver APIs public key to the sender API public key list
-  flex_trit_t flex_trit_pb_key[NTRU_PB_KEY_LEN_TRIT];
-  trit_t trit_pb_key[NTRU_PB_KEY_LEN_TRIT];
   mam_ntru_pk_t ntru_pk;
-  memcpy(ntru_pk.key, trit_pb_key, NTRU_PB_KEY_LEN_TRIT);
-  flex_trits_from_trytes(flex_trit_pb_key, NTRU_PB_KEY_LEN_TRIT * 3,
-                         (const tryte_t *)ntru_pb_key, NTRU_PB_KEY_LEN_TRYTE,
-                         NTRU_PB_KEY_LEN_TRYTE);
-  flex_trits_to_trits(trit_pb_key, NTRU_PB_KEY_LEN_TRIT, flex_trit_pb_key,
-                      NTRU_PB_KEY_LEN_TRIT, NTRU_PB_KEY_LEN_TRIT);
+  memcpy(ntru_pk.key, ntru_pb_key, NTRU_PB_KEY_LEN_TRIT);
+
   ERR_BIND_RETURN(mam_api_add_ntru_pk(api, &ntru_pk), ret);
 
   // Creating channel
@@ -43,9 +37,9 @@ retcode_t init_mam_send_objs(mam_api_t *api, bundle_transactions_t **bundle,
   return RC_OK;
 }
 
-retcode_t send_mam_msg(mam_api_t *api, bundle_transactions_t *bundle,
-                       tryte_t *channel_id, tryte_t *endpoint_id,
-                       char *payload) {
+retcode_t send_mam_msg(char *host, int port, mam_api_t *api,
+                       bundle_transactions_t *bundle, tryte_t *channel_id,
+                       tryte_t *endpoint_id, char *payload) {
   retcode_t ret = RC_OK;
   trit_t msg_id[MAM_MSG_ID_SIZE];
 
@@ -64,7 +58,7 @@ retcode_t send_mam_msg(mam_api_t *api, bundle_transactions_t *bundle,
   }
 
   // Sending bundle
-  if ((ret = send_bundle(HOST, PORT, bundle)) != RC_OK) {
+  if ((ret = send_bundle(host, port, bundle)) != RC_OK) {
     fprintf(stderr, "send_bundle failed with err %d\n", ret);
     return ret;
   }

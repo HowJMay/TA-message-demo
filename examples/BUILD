@@ -23,3 +23,12 @@ cc_binary(
         "@entangled//cclient/api",
     ],
 )
+
+cc_binary(
+    name = "gen_key",
+    srcs = ["gen_key.c"],
+    deps = [
+        "//core:core",
+        "//client:recv_client",
+    ],
+)
