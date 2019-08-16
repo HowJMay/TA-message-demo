@@ -4,12 +4,12 @@
 int main(int ac, char **av) {
   retcode_t ret = RC_OK;
   if (ac != 2) {
-    fprintf(stderr, "Please provide `file_path`.\n");
+    fprintf(stderr, "Please provide `file_name`.\n");
     return EXIT_FAILURE;
   }
-  char *file_path = av[1];
+  char *file_name = av[1];
 
-  FILE *fp = fopen(file_path, "wb");  // read mode
+  FILE *fp = fopen(file_name, "wb");  // read mode
 
   mam_api_t *api = (mam_api_t *)malloc(sizeof(mam_api_t));
 

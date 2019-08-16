@@ -31,7 +31,7 @@ int main(int ac, char **av) {
   printf("Input epid:");
   fgets((char *)epid, NUM_TRYTES_ADDRESS + 2, stdin);
 
-  ret = extra_recv_msg_chid(HOST, PORT, (tryte_t *)CHID, (tryte_t *)EPID);
+  ret = extra_recv_msg_chid(HOST, PORT, (tryte_t *)chid, (tryte_t *)epid);
   if (ret) {
     return EXIT_FAILURE;
   }
